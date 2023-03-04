@@ -7,17 +7,16 @@
 import * as sqlite3 from "sqlite3";
 import {open, Database} from "sqlite";
 import path from "path";
-import config from "./env-parser";
+import config from "./parser";
 
 
-let db: Database | null = null;
+async function SQLiteInit() {
+  const db = await open({
+    filename: path.join(__dirname, config.DATABASE_PATH),
+    driver: sqlite3.Database
+  });
+  console.log("Welcome to the sqlite database.");
+  return db;
+}
 
-open({
-  filename: path.join(__dirname, config.DATABASE_PATH),
-  driver: sqlite3.Database
-}).then(async val => {
-    db = val;
-    console.log("Welcome to the sqlite database.");
-}).catch((err) => console.error(err, "Failed to enter sqlite database."));
-
-export default db;
+export default SQLiteInit();
