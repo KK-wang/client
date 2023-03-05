@@ -4,8 +4,8 @@ import path from "path";
 
 dotenv.config();
 
-const PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, './keys/private.key')).toString();
-const PUBLIC_KEY = fs.readFileSync(path.resolve(__dirname, './keys/public.key')).toString();
+const PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../config/keys/private.key')).toString();
+const PUBLIC_KEY = fs.readFileSync(path.resolve(__dirname, '../config/keys/public.key')).toString();
 
 const config: IConfig = {
   APP_PORT: process.env.APP_PORT!,

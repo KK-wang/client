@@ -5,11 +5,12 @@ import Application from "koa";
   export = 语法是为了兼容 CommonJS 的。
 */
 import bodyParser from "koa-bodyparser";
-import "./config/database"; // 初始化数据库。
-import config from "./config/parser";
+import "./utils/database"; // 初始化数据库。
+import config from "./utils/parser";
 import errorHandler from "./middleware/error-handle";
-import { Koa } from "./config/types";
+import { Koa } from "./utils/types";
 import useRoutes from "./router";
+import "./utils/k8s-client"; // 初始化 k8s 客户端。
 
 const app: Koa = new Application();
 app.use(bodyParser());

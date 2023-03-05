@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
-import config from "../config/parser";
+import config from "../utils/parser";
 import * as Koa from "koa";
 import { getUserByUsername } from "../service/user.service";
-import * as errorTypes from "../config/constants";
+import * as errorTypes from "../utils/constants";
 import crypto from "crypto";
-import {DBType} from "../config/types";
+import {DBType} from "../utils/types";
 
 interface IRequestBody {
   username: string,
@@ -12,7 +12,8 @@ interface IRequestBody {
 }
 
 // 如何确定 middleware 中的参数究竟是什么类型，这就需要自底向上地一层层盘剥源码了。
-// 总之一句话查看泛型看顶层，查看参数类型看底层。
+// 总之一句话查看泛型和参数类型看底层。
+/* type 这样的重定义语句除了抽离泛型和给泛型参数一个默认值以外，没啥其它作用，想看本质的定义需要直接看最底层。*/
 async function login(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   // 如何理解带有泛型的 type 定义式？
   // 即重新命名类型，同时更好地抽离出泛型的参数位置。 

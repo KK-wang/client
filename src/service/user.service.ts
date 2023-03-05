@@ -1,5 +1,5 @@
-import { DBType } from "../config/types";
-import dbPromise from "../config/database";
+import { DBType } from "../utils/types";
+import dbPromise from "../utils/database";
 
 async function getUserByUsername (username: string): Promise<DBType.IUser> {
   const statement = `SELECT * FROM user WHERE username = ?;`;

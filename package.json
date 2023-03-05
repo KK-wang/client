@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "rm -rf ./dist && tsc && cp -r ./src/config/keys ./dist/config",
+    "build": "rm -rf ./dist && tsc && cp -r ./src/config/ ./dist",
     "test": "node ./dist/main.js",
     "serve": "ts-node ./src/main.ts"
   },

@@ -1,6 +1,6 @@
 import fs from "fs";
 import Router from "koa-router";
-import { Koa } from "../config/types";
+import { Koa } from "../utils/types";
 
 
 export default function useRoutes(this: Koa): void {
