@@ -7,7 +7,7 @@
 import * as sqlite3 from "sqlite3";
 import {open, Database} from "sqlite";
 import path from "path";
-import config from "./parser";
+import config from "../definition/vars";
 
 
 async function SQLiteInit() {

@@ -1,4 +1,4 @@
-import { DBType } from "../utils/types";
+import { DBType } from "../definition/types";
 import dbPromise from "../utils/database";
 
 async function getUserByUsername (username: string): Promise<DBType.IUser> {

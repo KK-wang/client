@@ -1,7 +1,7 @@
 import * as Koa from "koa";
-import * as errorTypes from "../utils/constants";
+import * as errorTypes from "../definition/constants";
 import jwt from "jsonwebtoken";
-import config from "../utils/parser";
+import config from "../definition/vars";
 
 async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   // 函数的参数类型如果含有泛型，那么在定义函数时就可以直接指定参数的泛型。
@@ -19,6 +19,7 @@ async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     });
     await next();
   } catch (err) {
+    console.log(err);
     const error = new Error(errorTypes.UNAUTHORIZATION);
     ctx.app.emit('error', error, ctx);
   }

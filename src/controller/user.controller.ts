@@ -1,10 +1,10 @@
 import * as jwt from "jsonwebtoken";
-import config from "../utils/parser";
+import config from "../definition/vars";
 import * as Koa from "koa";
 import { getUserByUsername } from "../service/user.service";
-import * as errorTypes from "../utils/constants";
+import * as errorTypes from "../definition/constants";
 import crypto from "crypto";
-import {DBType} from "../utils/types";
+import {DBType} from "../definition/types";
 
 interface IRequestBody {
   username: string,

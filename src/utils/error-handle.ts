@@ -1,5 +1,5 @@
 import * as Koa from "koa";
-import * as errorTypes from "../utils/constants"
+import * as errorTypes from "../definition/constants"
 
 function errorHandler(error: Error, ctx: Koa.ParameterizedContext) {
   let status: number, message: string;
@@ -11,6 +11,10 @@ function errorHandler(error: Error, ctx: Koa.ParameterizedContext) {
     case errorTypes.PASSWORD_IS_INCORRENT:
       status = 400;
       message = "Password is incorrent.";
+      break;
+    case errorTypes.K8SHTTPREQUESTERROR:
+      status = 400;
+      message = "K8s http request error."
       break;
     case errorTypes.UNAUTHORIZATION:
       status = 403;

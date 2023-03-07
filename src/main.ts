@@ -6,9 +6,9 @@ import Application from "koa";
 */
 import bodyParser from "koa-bodyparser";
 import "./utils/database"; // 初始化数据库。
-import config from "./utils/parser";
-import errorHandler from "./middleware/error-handle";
-import { Koa } from "./utils/types";
+import config from "./definition/vars";
+import errorHandler from "./utils/error-handle";
+import { Koa } from "./definition/types";
 import useRoutes from "./router";
 import "./utils/k8s-client"; // 初始化 k8s 客户端。
 
