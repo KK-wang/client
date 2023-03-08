@@ -43,7 +43,7 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     res.push(tmpRes.response.statusCode);
   }
   ctx.body = res;
-  // TODO: 在创建完 pod 之后，应该使用日志工具不断的获取 pod 的 CPU 和 Mem 信息（可以通过 kubectl get pod 获取终止条件），
+  // TODO: 在创建完 pod 之后，应该使用 Linux 自带的日志工具不断的获取 pod 的 CPU 和 Mem 信息（可以通过 kubectl get pod 获取终止条件），
   // 并将这些信息存储到 sqlite 中。
 }
 
