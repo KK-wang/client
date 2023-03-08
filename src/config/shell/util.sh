@@ -20,7 +20,11 @@ if [ ! -d pod_running_logs ]; then
 fi
 touch ./pod_running_logs/${pod_name}.log
 
-# III.记录 logs。
+# III.获取 cpu 和 mem 信息。
+cat /proc/meminfo | grep MemTotal >> ./pod_running_logs/${pod_name}.log
+lscpu | grep CPU\(s\) | head -n 1 >> ./pod_running_logs/${pod_name}.log
+
+# IV.记录 logs。
 while [[ `ps -p ${pod_pid} | grep ${pod_pid}` != "" ]];
 do
   ps -aux | grep ${pod_pid} | grep -v grep >> ./pod_running_logs/${pod_name}.log
