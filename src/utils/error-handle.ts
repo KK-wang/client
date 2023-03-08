@@ -12,10 +12,6 @@ function errorHandler(error: Error, ctx: Koa.ParameterizedContext) {
       status = 400;
       message = "Password is incorrent.";
       break;
-    case errorTypes.K8SHTTPREQUESTERROR:
-      status = 400;
-      message = "K8s http request error."
-      break;
     case errorTypes.UNAUTHORIZATION:
       status = 403;
       message = "Unauthorization.";

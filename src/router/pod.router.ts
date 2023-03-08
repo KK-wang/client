@@ -1,10 +1,10 @@
 import Router from "koa-router";
 import verifyAuth from "../middleware/verify-auth";
-import { createPods, getAllPods } from "../controller/pod.controller";
+import { createPods, getAllPodsRunningInfo, clearPods } from "../controller/pod.controller";
 
 const podRouter = new Router();
 
-podRouter.get("/:namespace/getAllPods", verifyAuth, getAllPods);
+podRouter.get("/getAllPodsRunningInfo", verifyAuth, getAllPodsRunningInfo);
 
 podRouter.post("/createPods", verifyAuth, createPods);
 /**
@@ -21,6 +21,8 @@ podRouter.post("/createPods", verifyAuth, createPods);
       nodeName: node01
  * 
  */
+
+podRouter.delete("/clearPods", verifyAuth, clearPods);
 
 export default podRouter;
 

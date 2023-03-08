@@ -10,7 +10,7 @@ interface INodeListMetrics {
 }
 
 async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
-  // TODO: 后续还是会将资源的使用信息更改为从 metrics server 中获取。
+  // 由于集群的异构性，只能通过 ssh 获取资源的使用信息。
   const entries = Object.entries(Nodes);
   const nodeListMetrics: INodeListMetrics = {};
   for (const [key, value] of entries) {

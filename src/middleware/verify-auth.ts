@@ -19,9 +19,13 @@ async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     });
     await next();
   } catch (err) {
-    console.log(err);
-    const error = new Error(errorTypes.UNAUTHORIZATION);
-    ctx.app.emit('error', error, ctx);
+    // FIXME: 生产环境记得改回来。
+    ctx.body = {
+      status: 509,
+      err,
+    };
+    // const error = new Error(errorTypes.UNAUTHORIZATION);
+    // ctx.app.emit('error', error, ctx);
   }
 }
 
