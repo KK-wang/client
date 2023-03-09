@@ -1,11 +1,12 @@
 import Router from "koa-router";
 import verifyAuth from "../middleware/verify-auth";
 import checkUtil from "../middleware/check-util";
+import processMetrics from "../middleware/process-metrics";
 import { createPods, getAllPodsRunningInfo, clearPods } from "../controller/pod.controller";
 
 const podRouter = new Router();
 
-podRouter.get("/getAllPodsRunningInfo", verifyAuth, getAllPodsRunningInfo);
+podRouter.get("/getAllPodsRunningInfo", verifyAuth, getAllPodsRunningInfo, processMetrics);
 
 podRouter.post("/createPods", verifyAuth, checkUtil, createPods);
 /**

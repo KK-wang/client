@@ -40,7 +40,7 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   for (const info of podsBody) {
     const body = podBodyFactory(info.podName, info.image, info.nodeName);
     const tmpRes = await k8sAPI.createNamespacedPod("default", body, "true");
-    // TODO: 调用 util 文件。
+    await sshes[info.nodeName].execCommand(`bash util.sh ${info.podName}`);
     res.push(tmpRes.response.statusCode);
   }
   ctx.body = res;
@@ -64,7 +64,7 @@ async function clearPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
 
 
 interface IPodList {
-  [key: string]: string | { runningTime: number }
+  [key: string]: { runningTime: number }
 }
 
 async function getAllPodsRunningInfo(ctx: Koa.ParameterizedContext, next: Koa.Next) {
@@ -92,11 +92,12 @@ async function getAllPodsRunningInfo(ctx: Koa.ParameterizedContext, next: Koa.Ne
       finishTime = item.status?.containerStatuses?.at(0)?.lastState?.terminated?.finishedAt;
     const formatedStartTime = moment(startTime), formatedEndTime = moment(finishTime);
     list[podName] = {
-      runningTime: formatedEndTime.diff(formatedStartTime, "second"), // running time 描述了 pod 的任务执行时间。
+      runningTime: formatedEndTime.diff(formatedStartTime, "second"), 
     };
-    // TODO: 同时还应取出 CPU 和 Mem 信息。
   }
-  ctx.body = list;
+  ctx.state.runningTime = list; 
+  // runningTime 描述了 pod 的任务执行时间。
+  await next();
 }
 
 /**

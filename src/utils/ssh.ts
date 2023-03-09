@@ -2,6 +2,7 @@ import { NodeSSH } from "node-ssh";
 
 const node01 = new NodeSSH();
 const node02 = new NodeSSH();
+// FIXME: ssh 是会自动断开的，因此应当每用一次就连接、关闭一次。
 
 node01.connect({
   host: "47.115.215.127",
@@ -18,8 +19,13 @@ node02.connect({
   password: "wxh20010320..",
 });
 
+interface ISSHes {
+  [key: string]: NodeSSH
+}  
 
-export default {
-  node01,
-  node02,
+const sshes: ISSHes = {
+  "node01": node01,
+  "node02": node02,
 };
+
+export default sshes;
