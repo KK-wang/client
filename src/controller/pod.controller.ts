@@ -1,10 +1,10 @@
-import k8sAPI, { metricsClient } from "../utils/k8s-client";
+import k8sAPI from "../utils/k8s-client";
 import * as Koa from "koa";
 import moment from "moment";
-import { topPods, V1Pod } from "@kubernetes/client-node";
+import { V1Pod } from "@kubernetes/client-node";
+import sshes from "../utils/ssh";
 
 interface IRequestBody {
-  tag: string, // 用来标记某一批次的 Pod。
   podsBody: {
     podName: string,
     image: string,
@@ -35,29 +35,33 @@ function podBodyFactory(podName: string, image: string, nodeName: string): V1Pod
 async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   // 默认情况下，k8s 使用 Docker Hub。
   // 当一个 pod 执行完毕之后，它的状态就会变为 CrashLoopBackOff，此时可以使用 kubectl describe pod <pod-name> 来查看一下 Exit Code，如果其为 0，那么表示正常退出。
-  const { tag, podsBody } = ctx.request.body as IRequestBody;
+  const { podsBody } = ctx.request.body as IRequestBody;
   const res = [];
   for (const info of podsBody) {
     const body = podBodyFactory(info.podName, info.image, info.nodeName);
     const tmpRes = await k8sAPI.createNamespacedPod("default", body, "true");
+    // TODO: 调用 util 文件。
     res.push(tmpRes.response.statusCode);
   }
   ctx.body = res;
-  // TODO: 在创建完 pod 之后，应该使用 Linux 自带的日志工具不断的获取 pod 的 CPU 和 Mem 信息（可以通过 kubectl get pod 获取终止条件），
-  // 并将这些信息存储到 sqlite 中。
-}
-
-// TODO: 后续还应添加 CPU 和 memory 的利用率信息，最后可以进行一下 average。
-// 注意，这里需要使用到 ssh，最后所有的信息会存储到 sqlite 中。
-function getAllPodsMetrics() {
-
 }
 
 // 删除所有的 Pod。
 async function clearPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
-  const res = await k8sAPI.deleteCollectionNamespacedPod("default", "true");
-  ctx.body = res.response.statusCode;
+  const clearRes = await k8sAPI.deleteCollectionNamespacedPod("default", "true");
+  const sshArr = Object.values(sshes);
+  let rmCount = 0;
+  for (const value of sshArr) {
+    const rmRes = await value.execCommand("rm -rf pod_running_logs");
+    if (rmRes.stderr === "") rmCount++;
+  }
+  ctx.body = {
+    clearPodsCode: clearRes.response.statusCode,
+    shouldRmCount: sshArr.length,
+    rmCount,
+  };
 }
+
 
 interface IPodList {
   [key: string]: string | { runningTime: number }

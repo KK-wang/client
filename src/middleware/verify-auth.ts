@@ -19,13 +19,12 @@ async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     });
     await next();
   } catch (err) {
-    // FIXME: 生产环境记得改回来。
+    // 除了 login 接口以外，所有接口的错误信息均从这里返回。
     ctx.body = {
       status: 509,
+      message: "error message from verifyAuth middleware.",
       err,
     };
-    // const error = new Error(errorTypes.UNAUTHORIZATION);
-    // ctx.app.emit('error', error, ctx);
   }
 }
 

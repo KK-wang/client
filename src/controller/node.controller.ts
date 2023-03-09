@@ -1,5 +1,5 @@
 import * as Koa from "koa";
-import Nodes from "../utils/ssh";
+import sshes from "../utils/ssh";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -12,7 +12,7 @@ interface INodeListMetrics {
 
 // 由于集群的异构性，只能通过 ssh 获取资源的使用信息。
 async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
-  const entries = Object.entries(Nodes);
+  const entries = Object.entries(sshes);
   const nodeListMetrics: INodeListMetrics = {};
   for (const [key, value] of entries) {
     const res = await value.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");

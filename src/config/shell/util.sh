@@ -9,7 +9,7 @@ docker_short_id=""
 while [[ ${docker_short_id} == "" ]];
 do
   docker_short_id=`docker ps | grep ${pod_name} | grep -v pause | awk '{print $1}'`
-  sleep 1s
+  sleep 0.1s
 done
 docker_long_id=`docker inspect ${docker_short_id} | jq ".[0].Id" | tr -d '"'`
 pod_pid=`cat ${docker_storage_location}/containers/${docker_long_id}/config.v2.json | jq ".State.Pid"`

@@ -9,6 +9,7 @@ node01.connect({
   port: 22,
   password: "wxh20010320..",
 });
+// 如果连接的是 root 用户，默认进入的目录就是 root 用户的根目录。
 
 node02.connect({
   host: "43.136.115.216",

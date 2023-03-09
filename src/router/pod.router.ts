@@ -1,12 +1,13 @@
 import Router from "koa-router";
 import verifyAuth from "../middleware/verify-auth";
+import checkUtil from "../middleware/check-util";
 import { createPods, getAllPodsRunningInfo, clearPods } from "../controller/pod.controller";
 
 const podRouter = new Router();
 
 podRouter.get("/getAllPodsRunningInfo", verifyAuth, getAllPodsRunningInfo);
 
-podRouter.post("/createPods", verifyAuth, createPods);
+podRouter.post("/createPods", verifyAuth, checkUtil, createPods);
 /**
  * 一个经典的在特定 Node 上执行的 Pod yaml 如下：
  * 
