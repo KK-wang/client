@@ -36,12 +36,12 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   // 默认情况下，k8s 使用 Docker Hub。
   // 当一个 pod 执行完毕之后，它的状态就会变为 CrashLoopBackOff，此时可以使用 kubectl describe pod <pod-name> 来查看一下 Exit Code，如果其为 0，那么表示正常退出。
   const { podsBody } = ctx.request.body as IRequestBody;
-  const res = [];
+  const res: { [podName: string]: number | undefined } = {};
   for (const info of podsBody) {
     const body = podBodyFactory(info.podName, info.image, info.nodeName);
     const tmpRes = await k8sAPI.createNamespacedPod("default", body, "true");
-    await sshes[info.nodeName].execCommand(`bash util.sh ${info.podName}`);
-    res.push(tmpRes.response.statusCode);
+    sshes[info.nodeName].execCommand(`bash util.sh ${info.podName}`);
+    res[info.podName] = tmpRes.response.statusCode;
   }
   ctx.body = res;
 }
