@@ -3,7 +3,7 @@ import { NodeSSH } from "node-ssh";
 const node00 = new NodeSSH();
 const node01 = new NodeSSH();
 const node02 = new NodeSSH();
-// FIXME: ssh 是会自动断开的，因此应当每用一次就连接、关闭一次。
+// FIXME: SSH 连接如果长时间闲置会自动断开，因此该边缘计算管理平台只适合短时间内提供服务。
 
 node00.connect({
   host: "39.96.212.224",
