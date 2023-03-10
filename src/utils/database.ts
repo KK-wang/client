@@ -5,7 +5,7 @@
  */
 // sqlite 是 sqlite 的 Promise 版本。
 import * as sqlite3 from "sqlite3";
-import {open, Database} from "sqlite";
+import { open } from "sqlite";
 import path from "path";
 import config from "../definition/vars";
 
