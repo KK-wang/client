@@ -12,7 +12,8 @@ node00.connect({
   password: config.NODE00_PASSWORD,
   keepaliveInterval: config.KEEP_ALIVE_INTERVAL,
   keepaliveCountMax: config.KEEP_ALIVE_COUNT_MAX,
-});
+}); 
+// node00 不是很稳定，可能会出现服务不可用的情况。
 
 node01.connect({
   host: config.NODE01_HOST,
