@@ -38,7 +38,8 @@ async function login(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     id: user.id,
     username: user.username,
   }, config.PRIVATE_KEY, {
-    expiresIn: 60 * 60 * 24,
+    expiresIn: "100y", 
+    // 延长 token 的过期时间。
     algorithm: "RS256",
   });
 
