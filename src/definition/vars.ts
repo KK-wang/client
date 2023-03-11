@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, '../config/.env'),
+  path: path.resolve(__dirname, '../config/env/.env'),
 });
 
 const PRIVATE_KEY = fs.readFileSync(path.resolve(__dirname, '../config/keys/private.key')).toString();
