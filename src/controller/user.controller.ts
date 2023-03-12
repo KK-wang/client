@@ -24,7 +24,7 @@ async function login(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   // 2.判断用户是否存在。
   const user: DBType.IUser = await getUserByUsername(username);
   if (!user) {
-    const error = new Error(errorTypes.USERNAME_OR_PASSWORD_IS_REQUIRED);
+    const error = new Error(errorTypes.USERNAME_DOES_NOT_EXIST);
     return ctx.app.emit("error", error, ctx);
   }
 

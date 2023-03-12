@@ -4,13 +4,13 @@ import * as errorTypes from "../definition/constants"
 function errorHandler(error: Error, ctx: Koa.ParameterizedContext) {
   let status: number, message: string;
   switch (error.message) {
-    case errorTypes.USERNAME_OR_PASSWORD_IS_REQUIRED:
-      status = 400;
-      message = "Username or password is required.";
-      break;
     case errorTypes.PASSWORD_IS_INCORRENT:
       status = 400;
       message = "Password is incorrent.";
+      break;
+    case errorTypes.USERNAME_DOES_NOT_EXIST:
+      status = 401;
+      message = "Username does not exist.";
       break;
     case errorTypes.UNAUTHORIZATION:
       status = 403;
