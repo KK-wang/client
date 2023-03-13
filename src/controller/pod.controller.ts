@@ -40,6 +40,7 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   for (const info of podsBody) {
     const body = podBodyFactory(info.podName, info.image, info.nodeName);
     const tmpRes = await k8sAPI.createNamespacedPod("default", body, "true");
+    // 这里需要保证 sshes 可用。
     sshes[info.nodeName].execCommand(`bash util.sh ${info.podName}`);
     res[info.podName] = tmpRes.response.statusCode;
   }
@@ -52,6 +53,7 @@ async function clearPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const sshArr = Object.values(sshes);
   let rmCount = 0;
   for (const value of sshArr) {
+    if (value.connection === null) continue;
     const rmRes = await value.execCommand("rm -rf pod_running_logs");
     if (rmRes.stderr === "") rmCount++;
   }

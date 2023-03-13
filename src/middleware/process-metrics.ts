@@ -21,6 +21,7 @@ async function processMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const metrics: IResponseBody = {}
   const runningTime = ctx.state.runningTime;
   for (const [key, ssh] of Object.entries(sshes)) {
+    if (ssh.connection === null) continue;
     const logList = await ssh.execCommand("ls pod_running_logs/");
     if (logList.stderr !== "") continue;
     const podNameArr = logList.stdout.trim().split(/\s+/).map(log => log.slice(0, -4));

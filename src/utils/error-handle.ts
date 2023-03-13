@@ -6,19 +6,19 @@ function errorHandler(error: Error, ctx: Koa.ParameterizedContext) {
   switch (error.message) {
     case errorTypes.PASSWORD_IS_INCORRENT:
       status = 400;
-      message = "Password is incorrent.";
+      message = "密码错误";
       break;
     case errorTypes.USERNAME_DOES_NOT_EXIST:
       status = 401;
-      message = "Username does not exist.";
+      message = "用户名不存在";
       break;
     case errorTypes.UNAUTHORIZATION:
       status = 403;
-      message = "Unauthorization.";
+      message = "无访问权限";
       break;
     default:
       status = 404;
-      message = "Not found";
+      message = "资源不存在";
   }
   ctx.status = status;
   ctx.body = message;

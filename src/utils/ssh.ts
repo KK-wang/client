@@ -1,9 +1,10 @@
 import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
 
-const node00 = new NodeSSH();
-const node01 = new NodeSSH();
-const node02 = new NodeSSH();
+let node00 = new NodeSSH();
+let node01 = new NodeSSH();
+let node02 = new NodeSSH();
+
 
 node00.connect({
   host: config.NODE00_HOST,
@@ -12,8 +13,10 @@ node00.connect({
   password: config.NODE00_PASSWORD,
   keepaliveInterval: config.KEEP_ALIVE_INTERVAL,
   keepaliveCountMax: config.KEEP_ALIVE_COUNT_MAX,
-}); 
+}).catch(() => {});
 // node00 不是很稳定，可能会出现服务不可用的情况。
+
+
 
 node01.connect({
   host: config.NODE01_HOST,
@@ -22,7 +25,7 @@ node01.connect({
   password: config.NODE01_PASSWORD,
   keepaliveInterval: config.KEEP_ALIVE_INTERVAL, // 每隔多长毫秒发送一次心跳。
   keepaliveCountMax: config.KEEP_ALIVE_COUNT_MAX, // 心跳的发送次数。
-});
+}).catch(() => {});
 // 如果连接的是 root 用户，默认进入的目录就是 root 用户的根目录。
 
 node02.connect({
@@ -32,10 +35,11 @@ node02.connect({
   password: config.NODE02_PASSWORD,
   keepaliveInterval: config.KEEP_ALIVE_INTERVAL,
   keepaliveCountMax: config.KEEP_ALIVE_COUNT_MAX,
-});
+}).catch(() => {});
+
 
 interface ISSHes {
-  [key: string]: NodeSSH
+  [key: string]: NodeSSH,
 }  
 
 const sshes: ISSHes = {

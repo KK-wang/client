@@ -1,5 +1,6 @@
 import * as Koa from "koa";
 import sshes from "../utils/ssh";
+import k8sAPI from "../utils/k8s-client";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -15,6 +16,7 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
   const entries = Object.entries(sshes);
   const nodeListMetrics: INodeListMetrics = {};
   for (const [key, value] of entries) {
+    if (value.connection === null) continue;
     const res = await value.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");
     // vmstat 2 5 命令表示每隔两秒输出一次资源使用情况，一共输出五次。
     
@@ -41,7 +43,39 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
   }
   ctx.body = nodeListMetrics;
 }
+
+interface INodesInfo {
+  [nodeName: string]: {
+    status: boolean,
+    pods: {
+      [podName: string]: {
+        image: string,
+        status: boolean,
+      },
+    }
+  }
+}
+
+async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
+  const nodes: INodesInfo = { };
+  for (const [key, value] of Object.entries(sshes)) {
+    if (value.connection === null) nodes[key] = { status: false, pods: {}};
+    else nodes[key] = { status: true, pods: {}};
+  }
+  const podInfo = await k8sAPI.listNamespacedPod("default", "true");
+  const pods = podInfo.body.items;
+  for (const pod of pods) {
+    const nodeName = pod.spec?.nodeName!;
+    const podName = pod.metadata?.name!;
+    nodes[nodeName].pods[podName] = {
+      image: pod.spec?.containers[0].image!,
+      status: pod.status?.containerStatuses?.at(0)?.state?.waiting === undefined ? true : false,
+    };
+  };
+  ctx.body = nodes;
+}
  
 export {
   getAllNodesMetrics,
+  getNodes,
 }
