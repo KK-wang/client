@@ -1,6 +1,8 @@
 import * as Koa from "koa";
 import sshes from "../utils/ssh";
 import k8sAPI from "../utils/k8s-client";
+import { NodeSSH } from "node-ssh";
+import config from "../definition/vars";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -56,9 +58,25 @@ interface INodesInfo {
   }
 }
 
+function getMasterSSH() {
+  const ssh = new NodeSSH();
+  ssh.connect({
+    host: config.MASTER_HOST,
+    username: config.MASTER_USERNAME,
+    port: config.SSH_PORT,
+    password: config.MASTER_PASSWORD,
+  }).catch(() => {});
+  return ssh;
+}
+
 async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const nodes: INodesInfo = { };
-  for (const [key, value] of Object.entries(sshes)) {
+  const masterSSH = getMasterSSH();
+  const sshesWithMaster = {
+    master: masterSSH,
+    ...sshes,
+  }
+  for (const [key, value] of Object.entries(sshesWithMaster)) {
     if (value.connection === null) nodes[key] = { status: false, pods: {}};
     else nodes[key] = { status: true, pods: {}};
   }
@@ -72,6 +90,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
       status: pod.status?.containerStatuses?.at(0)?.state?.waiting === undefined ? true : false,
     };
   };
+  masterSSH.dispose();
   ctx.body = nodes;
 }
  

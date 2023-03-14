@@ -16,8 +16,6 @@ node00.connect({
 }).catch(() => {});
 // node00 不是很稳定，可能会出现服务不可用的情况。
 
-
-
 node01.connect({
   host: config.NODE01_HOST,
   username: config.NODE01_USERNAME,
