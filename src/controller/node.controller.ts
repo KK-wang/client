@@ -3,6 +3,7 @@ import sshes from "../utils/ssh";
 import k8sAPI from "../utils/k8s-client";
 import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
+import nodeInfoPlus from "../definition/node-info";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -49,10 +50,21 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
 interface INodesInfo {
   [nodeName: string]: {
     status: boolean,
+    ip: string,
+    cpu: string,
+    mem: string,
+    os: string,
+    role: string,
+    k8sVersion: string,
+    dockerVersion: string,
+    business: string,
+    // TODO: 后面有时间添加 resources: string[], 用来记录 node 支持的模型。
     pods: {
       [podName: string]: {
         image: string,
         status: boolean,
+        githubUrl: string,
+        calcMetrics: string,
       },
     }
   }
@@ -77,8 +89,8 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     ...sshes,
   }
   for (const [key, value] of Object.entries(sshesWithMaster)) {
-    if (value.connection === null) nodes[key] = { status: false, pods: {}};
-    else nodes[key] = { status: true, pods: {}};
+    if (value.connection === null) nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
+    else nodes[key] = { status: true, pods: {}, ...(nodeInfoPlus[key])};
   }
   const podInfo = await k8sAPI.listNamespacedPod("default", "true");
   const pods = podInfo.body.items;
@@ -88,6 +100,9 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
       status: pod.status?.containerStatuses?.at(0)?.state?.waiting === undefined ? true : false,
+      // FIXME: 记得修改 githubUrl 和 calcMetrics。
+      githubUrl: "https://github.com/KK-wang",
+      calcMetrics: "21023",
     };
   };
   masterSSH.dispose();
