@@ -99,7 +99,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     const podName = pod.metadata?.name!;
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
-      status: pod.status?.containerStatuses?.at(0)?.state?.waiting === undefined ? true : false,
+      status: !(pod.status?.containerStatuses?.at(0)?.state?.running === undefined),
       // FIXME: 记得修改 githubUrl 和 calcMetrics。
       githubUrl: "https://github.com/KK-wang",
       calcMetrics: "21023",
