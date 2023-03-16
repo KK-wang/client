@@ -11,12 +11,23 @@ import errorHandler from "./utils/error-handle";
 import { Koa } from "./definition/types";
 import useRoutes from "./router";
 import "./utils/k8s-client"; // 初始化 k8s 客户端。
+import fs from "fs";
+import path from "path";
 
 const app: Koa = new Application();
 app.use(bodyParser());
 app.useRoutes = useRoutes;
 app.useRoutes();
 app.on("error", errorHandler);
+process.on("uncaughtException", err => {
+  // 该回调函数会用来处理 Error: read ECONNRESET 错误。
+  const errorLogPath = path.resolve(__dirname, "../error-log");
+  if (!fs.existsSync(errorLogPath))
+    fs.mkdirSync(errorLogPath);
+  fs.writeFile(`${errorLogPath}/log.txt`, 
+    `${new Date()}:\n${err.stack}\n----------------------------------------------------\n`, 
+    { flag: "a" }, () => console.error("Record a uncaughtException in log..."));  
+});
 
 app.listen(config.APP_PORT, () => {
   console.log(`Node server starts on port ${config.APP_PORT}.`);
