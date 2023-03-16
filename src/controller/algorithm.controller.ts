@@ -6,15 +6,14 @@ interface IRequestBody {
   algorithm: string,
   data: {
     nodes: {
-      id: number,
+      nodeName: string,
       cpu: number,
       mem: number,
     }[],
     tasks: {
-      id: number,
+      podName: string,
       image: string,
     }[]
-
   }
 }
 
