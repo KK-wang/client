@@ -58,7 +58,6 @@ interface INodesInfo {
     k8sVersion: string,
     dockerVersion: string,
     business: string,
-    // TODO: 后面有时间添加 resources: string[], 用来记录 node 支持的模型。
     pods: {
       [podName: string]: {
         image: string,
