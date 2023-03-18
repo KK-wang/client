@@ -99,7 +99,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
       status: !(pod.status?.containerStatuses?.at(0)?.state?.running === undefined),
-      // FIXME: 记得修改 githubUrl 和 calcMetrics。
+      // FIXME: 记得修改 githubUrl 和 calcMetrics（需要使用数据库）。
       githubUrl: "https://github.com/KK-wang",
       calcMetrics: "21023",
     };
