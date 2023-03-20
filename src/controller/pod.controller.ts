@@ -9,8 +9,6 @@ interface IRequestBody {
     podName: string,
     image: string,
     nodeName: string,
-    githubUrl: string,
-    calcMetrics: string,
   }[],
 }
 
