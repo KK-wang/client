@@ -4,6 +4,7 @@ import k8sAPI from "../utils/k8s-client";
 import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
 import nodeInfoPlus from "../definition/node-info";
+import { V1Pod } from "@kubernetes/client-node";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -61,7 +62,7 @@ interface INodesInfo {
     pods: {
       [podName: string]: {
         image: string,
-        status: boolean,
+        status: number,
         githubUrl: string,
         calcMetrics: string,
       },
@@ -80,6 +81,12 @@ function getMasterSSH() {
   return ssh;
 }
 
+function getPodStatus(pod: V1Pod) {
+  if (pod.status?.containerStatuses?.at(0)?.state?.waiting !== undefined) return 0; // 创建中。
+  if (pod.status?.containerStatuses?.at(0)?.state?.running !== undefined) return 1; // 运行中。
+  if (pod.status?.containerStatuses?.at(0)?.state?.terminated !== undefined) return 2; // 已完成。
+}
+
 async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const nodes: INodesInfo = { };
   const masterSSH = getMasterSSH();
@@ -88,6 +95,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     ...sshes,
   }
   for (const [key, value] of Object.entries(sshesWithMaster)) {
+    // Error: read ECONNRESET 错误可能会引起 ssh connection 中断。
     if (value.connection === null) nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
     else nodes[key] = { status: true, pods: {}, ...(nodeInfoPlus[key])};
   }
@@ -98,7 +106,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     const podName = pod.metadata?.name!;
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
-      status: !(pod.status?.containerStatuses?.at(0)?.state?.running === undefined),
+      status: getPodStatus(pod)!,
       // FIXME: 记得修改 githubUrl 和 calcMetrics（需要使用数据库）。
       githubUrl: "https://github.com/KK-wang",
       calcMetrics: "21023",

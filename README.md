@@ -12,3 +12,21 @@
 
 上述 SSH 连接如果长时间闲置就会自动断开的 BUG 已经被修复了。查看 ssh2 的源码之后可知，添加 keepaliveInterval 及 keepaliveCountMax 属性即可解决。
 
+**2023.03.21 补充 :**
+应用有时会遇到 `Error: read ECONNRESET` 错误而出现程序崩溃的情况，之前为了解决这个错误，使用了进程级错误监听的方式:
+```javascript
+process.on("uncaughtException", err => {
+  // 该回调函数会用来处理 Error: read ECONNRESET 错误。
+  const errorLogPath = path.resolve(__dirname, "../error-log");
+  if (!fs.existsSync(errorLogPath))
+    fs.mkdirSync(errorLogPath);
+  fs.writeFile(`${errorLogPath}/log.txt`, 
+    `${new Date()}:\n${err.stack}\n----------------------------------------------------\n`, 
+    { flag: "a" }, () => console.error("Record a uncaughtException in log..."));  
+});
+```
+如此一来就能够 catch 错误，从而不让应用程序崩溃，后来发现 `Error: read ECONNRESET` 可能会影响到应用的 ssh 连接，因此决定放弃这种方法，转而使用 pm2 来保证应用能够长久存在，pm2 能够保证 node 应用在程序崩溃是自动重启: 
+
+> When starting application with PM2, application are automatically restarted on auto exit, event loop empty (node.js) or when application crash.
+
+官方文档为 https://pm2.keymetrics.io/。
