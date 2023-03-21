@@ -82,7 +82,10 @@ function getMasterSSH() {
 }
 
 function getPodStatus(pod: V1Pod) {
-  if (pod.status?.containerStatuses?.at(0)?.state?.waiting !== undefined) return 0; // 创建中。
+  if (pod.status?.containerStatuses?.at(0)?.state?.waiting !== undefined) {
+    if (pod.status?.containerStatuses?.at(0)?.state?.waiting?.reason === "ContainerCreating")  return 0; // 创建中。
+    if (pod.status?.containerStatuses?.at(0)?.state?.waiting?.reason === "CrashLoopBackOff")  return 2; // 已完成。
+  }
   if (pod.status?.containerStatuses?.at(0)?.state?.running !== undefined) return 1; // 运行中。
   if (pod.status?.containerStatuses?.at(0)?.state?.terminated !== undefined) return 2; // 已完成。
 }
