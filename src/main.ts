@@ -17,7 +17,7 @@ import { Koa } from "./definition/types";
 
 const app: Koa = new Application();
 app.use(bodyParser());
-app.use(server(path.resolve(__dirname, "../build")));
+app.use(server(path.resolve(__dirname, "../static")));
 app.useRoutes = useRoutes;
 app.useRoutes();
 app.on("error", errorHandler);
