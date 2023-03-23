@@ -30,3 +30,6 @@ process.on("uncaughtException", err => {
 > When starting application with PM2, application are automatically restarted on auto exit, event loop empty (node.js) or when application crash.
 
 官方文档为 https://pm2.keymetrics.io/。
+
+**2023.03.23 补充 :**
+为了避免 ssh 长连接和 ssh 用完就关的这两种浪费资源的极端情况，决定放弃采用 pm2 的方式，转而使用全局变量结合进程级错误 `uncaughtException` 的方式来完成 ssh 连接的灵活连接。
