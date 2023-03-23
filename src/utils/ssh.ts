@@ -1,15 +1,6 @@
 import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
 
-declare global {
-  var sshUtils: {
-    [node: string]: {
-      ssh: NodeSSH,
-      link: () => void,
-    }
-  }
-}
-
 sshUtils.node00.ssh = new NodeSSH();
 // node00 不是很稳定，可能会出现服务不可用的情况。
 sshUtils.node00.link = () => {
