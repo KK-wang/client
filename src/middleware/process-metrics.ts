@@ -1,5 +1,4 @@
 import * as Koa from "koa";
-import sshes from "../utils/ssh";
 
 interface IResponseBody {
   [podName: string]: {
@@ -20,13 +19,19 @@ interface IResponseBody {
 async function processMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const metrics: IResponseBody = {}
   const runningTime = ctx.state.runningTime;
-  for (const [key, ssh] of Object.entries(sshes)) {
-    if (ssh.connection === null) continue;
-    const logList = await ssh.execCommand("ls pod_running_logs/");
+  for (const [key, value] of Object.entries(sshUtils)) {
+    if (value.ssh.connection === null) {
+      try {
+        await value.link();
+      } catch {
+        continue;
+      }
+    }
+    const logList = await value.ssh.execCommand("ls pod_running_logs/");
     if (logList.stderr !== "") continue;
     const podNameArr = logList.stdout.trim().split(/\s+/).map(log => log.slice(0, -4));
     for (const podName of podNameArr) {
-      const logContent = await ssh.execCommand(`cat pod_running_logs/${podName}.log`);
+      const logContent = await value.ssh.execCommand(`cat pod_running_logs/${podName}.log`);
       let logMatrix = logContent.stdout.split("\n").map(line => line.trim().split(/\s+/));
       const memTotal = parseInt(logMatrix[0][1]), cpuNum = parseInt(logMatrix[1][1]);
       logMatrix = logMatrix.slice(2);

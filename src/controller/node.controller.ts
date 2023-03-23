@@ -1,5 +1,4 @@
 import * as Koa from "koa";
-import sshes from "../utils/ssh";
 import k8sAPI from "../utils/k8s-client";
 import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
@@ -17,11 +16,17 @@ interface INodeListMetrics {
 
 // 由于集群的异构性，只能通过 ssh 获取资源的使用信息。
 async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
-  const entries = Object.entries(sshes);
+  const entries = Object.entries(sshUtils);
   const nodeListMetrics: INodeListMetrics = {};
   for (const [key, value] of entries) {
-    if (value.connection === null) continue;
-    const res = await value.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");
+    if (value.ssh.connection === null){ 
+      try {
+        await value.link();
+      } catch {
+        continue;
+      }
+    }
+    const res = await value.ssh.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");
     // vmstat 2 5 命令表示每隔两秒输出一次资源使用情况，一共输出五次。
     
     let arr = res.stdout.split("\n");
@@ -93,13 +98,23 @@ function getPodStatus(pod: V1Pod) {
 async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const nodes: INodesInfo = { };
   const masterSSH = getMasterSSH();
-  const sshesWithMaster = {
+  const sshesWithMaster: { [node: string]: NodeSSH } = {
     master: masterSSH,
-    ...sshes,
   }
+  const sshUtilKeys = Object.keys(sshUtils);
+  sshUtilKeys.forEach(key => sshesWithMaster[key] = sshUtils[key].ssh);
   for (const [key, value] of Object.entries(sshesWithMaster)) {
     // Error: read ECONNRESET 错误可能会引起 ssh connection 中断。
-    if (value.connection === null) nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
+    if (value.connection === null) {
+      if (key === "master") nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
+      else {
+        try {
+          await sshUtils[key].link();
+        } catch {
+          nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
+        }
+      }
+    }
     else nodes[key] = { status: true, pods: {}, ...(nodeInfoPlus[key])};
   }
   const podInfo = await k8sAPI.listNamespacedPod("default", "true");

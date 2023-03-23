@@ -4,7 +4,7 @@ import * as Koa from "koa";
 import { getUserByUsername } from "../service/user.service";
 import * as errorTypes from "../definition/constants";
 import crypto from "crypto";
-import {DBType} from "../definition/types";
+import { DBType } from "../definition/types";
 
 interface IRequestBody {
   username: string,

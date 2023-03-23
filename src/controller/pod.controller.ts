@@ -2,7 +2,6 @@ import k8sAPI from "../utils/k8s-client";
 import * as Koa from "koa";
 import moment from "moment";
 import { V1Pod } from "@kubernetes/client-node";
-import sshes from "../utils/ssh";
 
 interface IRequestBody {
   podsBody: {
@@ -41,7 +40,9 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     const body = podBodyFactory(info.podName, info.image, info.nodeName);
     const tmpRes = await k8sAPI.createNamespacedPod("default", body, "true");
     // 这里需要保证 sshes 可用。
-    sshes[info.nodeName].execCommand(`bash util.sh ${info.podName}`);
+    if (sshUtils[info.nodeName].ssh.connection === null) 
+      await sshUtils[info.nodeName].link();
+    sshUtils[info.nodeName].ssh.execCommand(`bash util.sh ${info.podName}`);
     res[info.podName] = tmpRes.response.statusCode;
   }
   ctx.body = res;
@@ -50,11 +51,17 @@ async function createPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
 // 删除所有的 Pod。
 async function clearPods(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const clearRes = await k8sAPI.deleteCollectionNamespacedPod("default", "true");
-  const sshArr = Object.values(sshes);
+  const sshArr = Object.values(sshUtils);
   let rmCount = 0;
   for (const value of sshArr) {
-    if (value.connection === null) continue;
-    const rmRes = await value.execCommand("rm -rf pod_running_logs");
+    if (value.ssh.connection === null) {
+      try {
+        await value.link();
+      } catch {
+        continue;
+      }
+    }
+    const rmRes = await value.ssh.execCommand("rm -rf pod_running_logs");
     if (rmRes.stderr === "") rmCount++;
   }
   ctx.body = {
