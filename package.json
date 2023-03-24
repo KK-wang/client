@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "serve": "ts-node ./src/main.ts",
-    "deploy": "node ./deploy.js"
+    "test": "ts-node ./src/main.ts",
+    "deploy": "node ./deploy.js",
+    "serve": "forever start -v -c ts-node ./src/main.ts"
   },
   "keywords": [],
   "author": "",

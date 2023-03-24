@@ -36,3 +36,9 @@ process.on("uncaughtException", err => {
 
 **2023.03.24 补充 :**
 在 TypeScript 中使用 Node 全局变量会出现类型检测不到的问题，因此决定放弃类型检测，转而使用类型导入的方式。
+
+另外，关于部署，为了让应用实现持久服务，引入了 forever 作为服务工具。
+
+> A simple CLI tool for ensuring that a given script runs continuously (i.e. forever)
+
+github 地址为 https://github.com/foreversd/forever。
