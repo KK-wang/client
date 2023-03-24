@@ -1,5 +1,6 @@
 import * as Koa from "koa";
 import path from "path";
+import sshUtils from "../utils/ssh";
 
 async function checkUtil(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   for (const value of Object.values(sshUtils)) {

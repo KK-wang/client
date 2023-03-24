@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "serve": "ts-node ./src/main.ts"
+    "serve": "ts-node ./src/main.ts",
+    "deploy": "node ./deploy.js"
   },
   "keywords": [],
   "author": "",

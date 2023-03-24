@@ -2,6 +2,7 @@ import k8sAPI from "../utils/k8s-client";
 import * as Koa from "koa";
 import moment from "moment";
 import { V1Pod } from "@kubernetes/client-node";
+import sshUtils from "../utils/ssh";
 
 interface IRequestBody {
   podsBody: {

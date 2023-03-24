@@ -4,6 +4,7 @@ import { NodeSSH } from "node-ssh";
 import config from "../definition/vars";
 import nodeInfoPlus from "../definition/node-info";
 import { V1Pod } from "@kubernetes/client-node";
+import sshUtils from "../utils/ssh";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -110,6 +111,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
       else {
         try {
           await sshUtils[key].link();
+          nodes[key] = { status: true, pods: {}, ...(nodeInfoPlus[key])};
         } catch {
           nodes[key] = { status: false, pods: {}, ...(nodeInfoPlus[key])};
         }
