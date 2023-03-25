@@ -5,7 +5,8 @@
   "scripts": {
     "test": "ts-node ./src/main.ts",
     "deploy": "node ./deploy.js",
-    "serve": "forever start -v -c ts-node ./src/main.ts"
+    "serve": "forever start -v -c ts-node ./src/main.ts",
+    "stop": "forever stopall"
   },
   "keywords": [],
   "author": "",

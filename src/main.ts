@@ -14,10 +14,12 @@ import server from "koa-static";
 import path from "path";
 import fs from "fs";
 import { Koa } from "./definition/types";
+import staticRouter from "./middleware/static-router";
 
 const app: Koa = new Application();
 app.use(bodyParser());
 app.use(server(path.resolve(__dirname, "../static")));
+app.use(staticRouter);
 app.useRoutes = useRoutes;
 app.useRoutes();
 app.on("error", errorHandler);
