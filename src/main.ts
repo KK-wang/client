@@ -18,7 +18,9 @@ import staticRouter from "./middleware/static-router";
 
 const app: Koa = new Application();
 app.use(bodyParser());
-app.use(server(path.resolve(__dirname, "../static")));
+app.use(server(path.resolve(__dirname, "../static"), {
+  maxage: 60 * 60 * 1000, // 浏览器缓存时间为 1 小时。
+}));
 app.use(staticRouter);
 app.useRoutes = useRoutes;
 app.useRoutes();
