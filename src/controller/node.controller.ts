@@ -19,6 +19,8 @@ interface INodeListMetrics {
 async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const entries = Object.entries(sshUtils);
   const nodeListMetrics: INodeListMetrics = {};
+  const promiseArr: Promise<number>[] = [];
+
   for (const [key, value] of entries) {
     if (value.ssh.connection === null){ 
       try {
@@ -27,9 +29,17 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
         continue;
       }
     }
+    promiseArr.push(helper(key, value));
+  }
+  await Promise.all(promiseArr);
+  ctx.body = nodeListMetrics;
+
+  async function helper (key: string, value: {
+    ssh: NodeSSH;
+    link: () => void;
+  }) {
     const res = await value.ssh.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");
     // vmstat 2 5 命令表示每隔两秒输出一次资源使用情况，一共输出五次。
-    
     let arr = res.stdout.split("\n");
     arr = [arr[1], ...arr.slice(4)];
     const newArr = arr.map(item => item.trim().split(/\s+/));
@@ -49,9 +59,9 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
       numsCPU,
       idleCPU,
       availableMem,
-    }
-  }
-  ctx.body = nodeListMetrics;
+    };
+    return 0;
+  };
 }
 
 interface INodesInfo {

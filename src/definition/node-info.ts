@@ -52,6 +52,36 @@ const nodeInfoPlus: INodeInfoPlus = {
     dockerVersion: "v20.10.14",
     business: "腾讯云",
   },
+  node03: {
+    ip: "47.120.14.60",
+    cpu: "2 核",
+    mem: "2 G",
+    os: "CentOS Linux release 7.9.2009 (Core)",
+    role: "root",
+    k8sVersion: "v1.23.6",
+    dockerVersion: "v20.10.14",
+    business: "阿里云",
+  },
+  node04: {
+    ip: "47.113.201.179",
+    cpu: "2 核",
+    mem: "2 G",
+    os: "CentOS Linux release 7.9.2009 (Core)",
+    role: "root",
+    k8sVersion: "v1.23.6",
+    dockerVersion: "v20.10.14",
+    business: "阿里云",
+  },
+  node05: {
+    ip: "47.120.8.61",
+    cpu: "2 核",
+    mem: "2 G",
+    os: "CentOS Linux release 7.9.2009 (Core)",
+    role: "root",
+    k8sVersion: "v1.23.6",
+    dockerVersion: "v20.10.14",
+    business: "阿里云",
+  },
 }
 
 export default nodeInfoPlus;

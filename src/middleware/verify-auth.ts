@@ -23,7 +23,7 @@ async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     ctx.body = {
       status: 509,
       message: "error message from verifyAuth middleware.",
-      err,
+      err: JSON.stringify(err),
     };
   }
 }
