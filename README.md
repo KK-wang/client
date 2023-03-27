@@ -42,3 +42,6 @@ process.on("uncaughtException", err => {
 > A simple CLI tool for ensuring that a given script runs continuously (i.e. forever)
 
 github 地址为 https://github.com/foreversd/forever。
+
+**2023.03.27 补充 :**
+最终还是决定使用 keepaliveInterval 及 keepaliveCountMax 属性来解决 ssh 断开问题，但同时保留进程级错误 `uncaughtException` 和类型导入来加一道防止 ssh 断开的保险。最后提一嘴，在 `forever list` 的 `uptime` 字段中可以获悉进程已经运行的时间，格式为 `days:hours:minutes:seconds`。
