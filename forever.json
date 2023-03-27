@@ -1,5 +1,0 @@
-{
-  "logFile": "/root/koa-server/logs/forever.log",
-  "outFile": "/root/koa-server/logs/out.log",
-  "errFile": "/root/koa-server/logs/error.log"
-}
