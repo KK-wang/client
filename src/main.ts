@@ -27,10 +27,10 @@ app.useRoutes();
 app.on("error", errorHandler);
 process.on("uncaughtException", err => {
   // 该回调函数会用来处理 Error: read ECONNRESET 错误。
-  const errorLogPath = path.resolve(__dirname, "../error-log");
+  const errorLogPath = path.resolve(__dirname, "../logs");
   if (!fs.existsSync(errorLogPath))
     fs.mkdirSync(errorLogPath);
-  fs.writeFile(`${errorLogPath}/log.txt`, 
+  fs.writeFile(`${errorLogPath}/customize.log`, 
     `${new Date()}:\n${err.stack}\n-------------------------------------------------------\n----------------SSH 连接断开错误，已捕捉----------------\n`, 
     { flag: "a" }, () => {});  
 });
