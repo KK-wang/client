@@ -5,11 +5,11 @@ interface IResponseBody {
   [podName: string]: {
     nodeName: string,
     runningTime: number,
-    cpuUsage: {
+    cpuUsage: { // 占用的 CPU。
       [key: number]: number,
       average: number;
     },
-    memUsage: {
+    memUsage: { // 占用的内存。
       [key: number]: number,
       average: number;
     },

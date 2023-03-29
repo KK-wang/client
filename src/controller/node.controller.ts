@@ -10,7 +10,9 @@ interface INodeListMetrics {
   [key: string]: {
     numsCPU: number
     idleCPU: { [key: number]: number, average: number },
+    // 空闲的 CPU。
     availableMem: { [key: number]: number, average: number },
+    // 空闲的内存。
   }
 }
 
