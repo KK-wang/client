@@ -6,7 +6,7 @@ const nodeRouter = new Router();
 
 nodeRouter.get("/getAllNodesMetrics", verifyAuth, getAllNodesMetrics);
 
-nodeRouter.get("/getNodes", getNodes);
+nodeRouter.get("/getNodes", verifyAuth, getNodes);
 
 
 

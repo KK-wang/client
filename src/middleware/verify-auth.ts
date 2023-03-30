@@ -20,10 +20,11 @@ async function verifyAuth(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     await next();
   } catch (err) {
     // 除了 login 接口以外，所有接口的错误信息均从这里返回。
+    console.log(err);
     ctx.body = {
       status: 509,
       message: "error message from verifyAuth middleware.",
-      err: JSON.stringify(err),
+      err: (err as Error).stack,
     };
   }
 }

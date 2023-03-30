@@ -20,10 +20,12 @@ function podBodyFactory(podName: string, image: string, nodeName: string): V1Pod
       name: podName,
     },
     spec: {
+      restartPolicy: "Never",
       containers: [
         {
-          name: `${image}-container`,
-          image: image
+          name: image,
+          image: image,
+          imagePullPolicy: "IfNotPresent",
         }
       ],
       nodeName: nodeName,
