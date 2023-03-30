@@ -5,6 +5,7 @@ import config from "../definition/vars";
 import nodeInfoPlus from "../definition/node-info";
 import { V1Pod } from "@kubernetes/client-node";
 import sshUtils from "../utils/ssh";
+import imageCalcMap from "../definition/image-calc-map";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -103,7 +104,7 @@ function getPodStatus(pod: V1Pod) {
   if (pod.status?.containerStatuses === undefined) throw new Error(); // 有 Pod 处于创建失败的状态。
   if (pod.status?.containerStatuses![0]?.state?.waiting !== undefined) {
     if (pod.status?.containerStatuses![0]?.state?.waiting?.reason === "ContainerCreating")  return 0; // 创建中。
-    if (pod.status?.containerStatuses![0]?.state?.waiting?.reason === "CrashLoopBackOff")  return 2; // 已完成。
+    if (pod.status?.containerStatuses![0]?.state?.waiting?.reason === "CrashLoopBackOff")  return 1; // 运行中。
   }
   if (pod.status?.containerStatuses![0]?.state?.running !== undefined) return 1; // 运行中。
   if (pod.status?.containerStatuses![0]?.state?.terminated !== undefined) return 2; // 已完成。
@@ -137,12 +138,12 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   for (const pod of pods) {
     const nodeName = pod.spec?.nodeName!;
     const podName = pod.metadata?.name!;
+    const calc = imageCalcMap[pod.spec?.containers[0].image!];
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
       status: getPodStatus(pod)!,
-      // FIXME: 记得修改 githubUrl 和 calcMetrics（需要使用数据库）。
-      githubUrl: "https://github.com/KK-wang",
-      calcMetrics: "21023",
+      githubUrl: `https://github.com/KK-wang/ai-task/blob/master/various-task/Dockerfile.${calc.slice(0, -3)}s`,
+      calcMetrics: calc,
     };
   };
   masterSSH.dispose();
