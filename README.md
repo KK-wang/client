@@ -45,3 +45,6 @@ github 地址为 https://github.com/foreversd/forever。
 
 **2023.03.27 补充 :**
 最终还是决定使用 keepaliveInterval 及 keepaliveCountMax 属性来解决 ssh 断开问题，但同时保留进程级错误 `uncaughtException` 和类型导入来加一道防止 ssh 断开的保险。最后提一嘴，在 `forever list` 的 `uptime` 字段中可以获悉进程已经运行的时间，格式为 `days:hours:minutes:seconds`。
+
+**2023.03.31 补充 :**
+由于 node00 有着极高的内存，而 ps 查看 %mem 的精度只有小数点后一位，因此会出现对于运行在 node00 上的 pod，其运行期间的内存统计信息在后期会维持定值的现象。
