@@ -6,7 +6,8 @@
     "test": "ts-node ./src/main.ts",
     "deploy": "node ./deploy.js",
     "serve": "forever start -v -c ts-node ./src/main.ts",
-    "stop": "forever stopall"
+    "stop": "forever stopall",
+    "delete": "node ./delete-util.js"
   },
   "keywords": [],
   "author": "",

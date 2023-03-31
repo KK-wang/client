@@ -28,5 +28,5 @@ lscpu | grep CPU\(s\) | head -n 1 >> ./pod_running_logs/${pod_name}.log
 while [[ `ps -p ${pod_pid} | grep ${pod_pid}` != "" ]];
 do
   ps -aux | grep ${pod_pid} | grep -v grep >> ./pod_running_logs/${pod_name}.log
-  sleep 2.5s
+  sleep 1.0s
 done
