@@ -70,7 +70,7 @@ async function processMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     for (let i = 0; i < logMatrix.length; i++) {
       metrics[podName].cpuUsage[i] = parseFloat(logMatrix[i][2]);
       metrics[podName].cpuUsage.average += metrics[podName].cpuUsage[i];
-      metrics[podName].memUsage[i] = parseFloat(logMatrix[i][3]) * memTotal;
+      metrics[podName].memUsage[i] = parseFloat(logMatrix[i][3]) * memTotal * 0.01;
       metrics[podName].memUsage.average += metrics[podName].memUsage[i];
     }
     metrics[podName].cpuUsage.average /= logMatrix.length;
