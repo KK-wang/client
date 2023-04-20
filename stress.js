@@ -70,23 +70,16 @@ const helper = async (node) => {
     "username": node.username,
     "password": node.password,
   });
-  await ssh.execCommand(`stress --cpu ${node.CPUCore} --timeout ${time}`);
-  ssh.dispose();
+  ssh.execCommand(`stress --cpu ${node.CPUCore} --timeout ${time}`);
 }
 
-let len = 0 // 进度条长度。 
-
 const stress = async () => {
-  const promiseArr = [];
-  for (const node of nodes)
-    promiseArr.push(helper(node).then(() => {
-      progressBar.update(len + 1);
-      len++;
-      return Promise.resolve();
-    }))
-  await Promise.all(promiseArr);
+  for (const node of nodes) {
+    helper(node);
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    progressBar.increment();
+  }
   console.log("\n\nAll nodes have been run command stress.");
-  process.exit(0);
 }
 
 stress()
