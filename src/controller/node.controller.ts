@@ -41,7 +41,7 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
     ssh: NodeSSH;
     link: () => void;
   }) {
-    const res = await value.ssh.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 5");
+    const res = await value.ssh.execCommand("lscpu | grep CPU | head -n 2 && vmstat 2 6");
     // vmstat 2 5 命令表示每隔两秒输出一次资源使用情况，一共输出五次。
     let arr = res.stdout.split("\n");
     arr = [arr[1], ...arr.slice(4)];
@@ -50,11 +50,11 @@ async function getAllNodesMetrics(ctx: Koa.ParameterizedContext, next: Koa.Next)
     const idleCPU: { [key: number]: number, average: number } = { average: -1 };
     const availableMem: { [key: number]: number, average: number } = { average: -1 };
     let idleCPUSum = 0, availableMemSum = 0;
-    for (let i = 1; i < newArr.length; i++) {
-      idleCPU[i] = parseInt(newArr[i][14]);
-      availableMem[i] = parseInt(newArr[i][3]) + parseInt(newArr[i][4]) + parseInt(newArr[i][5]);
-      idleCPUSum += idleCPU[i];
-      availableMemSum += availableMem[i];
+    for (let i = 2; i < newArr.length; i++) {
+      idleCPU[i - 1] = parseInt(newArr[i][14]);
+      availableMem[i - 1] = parseInt(newArr[i][3]) + parseInt(newArr[i][4]) + parseInt(newArr[i][5]);
+      idleCPUSum += idleCPU[i - 1];
+      availableMemSum += availableMem[i - 1];
     }
     idleCPU.average = idleCPUSum / 5;
     availableMem.average = availableMemSum / 5;

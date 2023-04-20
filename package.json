@@ -7,7 +7,8 @@
     "deploy": "node ./deploy.js",
     "serve": "forever start -v -c ts-node ./src/main.ts",
     "stop": "forever stopall",
-    "delete": "node ./delete-util.js"
+    "delete": "node ./delete-util.js",
+    "stress": "node ./stress.js"
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,7 @@
     "@types/koa-bodyparser": "^4.3.10",
     "@types/koa-router": "^7.4.4",
     "@types/koa-static": "^4.0.2",
+    "cli-progress": "^3.12.0",
     "dotenv": "^16.0.3",
     "ts-node": "^10.9.1",
     "tslint": "^6.1.3",

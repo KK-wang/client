@@ -37,7 +37,7 @@ const replace = async () => {
     {
       host: "47.113.201.179",
       username: "root",
-      password: "Lwt8209190413",
+      password: "Root123456",
     },
     {
       host: "47.120.8.61",
