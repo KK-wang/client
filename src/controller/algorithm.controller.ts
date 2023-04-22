@@ -27,7 +27,7 @@ type Solution = ISolution[]
 
 async function createAlgorithmTask(ctx: Koa.ParameterizedContext, next: Koa.Next) {
   const { algorithm, nodes, tasks } = ctx.request.body as IRequestBody;
-  const res = await py.run(path.resolve(__dirname, `../config/algorithm/${algorithm}alg.py`), {
+  const res = await py.run(path.resolve(__dirname, `../config/algorithm/${algorithm}.py`), {
     mode: "json",
     args: [JSON.stringify({ nodes, tasks })], // 传递 JSON 参数。
   });
