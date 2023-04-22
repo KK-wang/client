@@ -63,7 +63,7 @@ class BBO_Pro:
     self.vector_size = len(self.info["tasks"]) # 解向量的长度。
     self.node_quantity = 6 # 可用于运行 pod 的工作节点数量。
     self.calc_metrics_threshold = 300 # 初始化时，计算任务被分配到 node00 上的计算量阈值。
-    self.time_weight = [round(0.85 + x / 100, 2) for x in range(0, 11)] # 为了能够尽可能取得最优解，选择多个权向量确定不同的搜索方向。
+    self.time_weight = [round(0.85 + x / 100, 2) for x in range(0, 6)] # 为了能够尽可能取得最优解，选择多个权向量确定不同的搜索方向。
     self.logistics_K = 0.000025 # logistics 函数中的 K 值，参数的确定基于函数图像的调整。
     self.logistics_X_0 = 300000 # logistics 函数中的 X_0 值，参数的确定基于函数图像的调整。
     self.task_calc_density = 23 # 任务的计算密度。
@@ -81,7 +81,7 @@ class BBO_Pro:
     self.HSI_sum = 0 # 群体 HSI 的和值。
     self.HSI_min = sys.maxsize # 群体中 HSI 的最小值。 
     self.HSI_min_ids = [] # 群体中具有最小 HSI 值的 id（可能有多个）。
-    self.mutation_to_node00_list_len = 3 # 变异为 node00 的随机数列表长度。
+    self.mutation_to_node00_list_len = 8 # 变异为 node00 的随机数列表长度。
 
     # 定义变量。
     self.solutions = [] # 一个复杂的数据结构，包含 id、解、迁入迁出率和 HSI 值。

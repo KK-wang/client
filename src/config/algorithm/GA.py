@@ -59,7 +59,7 @@ class GA:
     self.solution_size = 50 # 种群中栖息地的数量，这里指代解的数量。
     self.vector_size = len(self.info["tasks"]) # 解向量的长度。
     self.node_quantity = 6 # 可用于运行 pod 的工作节点数量。
-    self.time_weight = [round(0.85 + x / 100, 2) for x in range(0, 11)] # 为了能够尽可能取得最优解，选择多个权向量确定不同的搜索方向。
+    self.time_weight = [round(0.85 + x / 100, 2) for x in range(0, 6)] # 为了能够尽可能取得最优解，选择多个权向量确定不同的搜索方向。
     self.logistics_K = 0.000025 # logistics 函数中的 K 值，参数的确定基于函数图像的调整。
     self.logistics_X_0 = 300000 # logistics 函数中的 X_0 值，参数的确定基于函数图像的调整。
     self.task_calc_density = 23 # 任务的计算密度。
