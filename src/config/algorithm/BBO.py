@@ -54,7 +54,7 @@ class BBO:
         self.info["tasks"].append(task)
 
     # 定义参数。
-    self.iterations = 150 # 算法的迭代次数。
+    self.iterations = 80 # 算法的迭代次数。
     self.solution_size = 50 # 种群中栖息地的数量，这里指代解的数量。
     self.S_max = 50 # 种群数量的最大值，用于计算迁入迁出率，为了能够同时去到 0 和 1，取 S_max = solution_size - 1。
     self.vector_size = len(self.info["tasks"]) # 解向量的长度。
@@ -69,6 +69,7 @@ class BBO:
     self.trans_bandwidth = 20.29 # 传输带宽。
     self.energy_density = 11.3453 # 任务的能量密度。
     self.e_per_time = self.task_calc_density * self.trans_bandwidth # 单位时间的传输所消耗的能量。
+    self.mutation_to_node00_list_len = 8
 
     # 定义变量。
     self.solutions = [] # 解向量。
@@ -203,7 +204,8 @@ class BBO:
     copy_solution = solution.copy() # 精英保存策略。
     for i in range(0, self.vector_size):
       if random.random() < self.mutation_p:
-        solution["vector"][i] = random.randint(0, 5)
+        node = random.randint(-(self.mutation_to_node00_list_len - 1), self.node_quantity - 1) 
+        solution["vector"][i] = 0 if node <= 0 else node
     self.get_HSI(solution)
     if solution["HSI"] > copy_solution["HSI"]: # 得到劣化解。
       solution["HSI"] = copy_solution["HSI"]
