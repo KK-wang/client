@@ -101,7 +101,10 @@ function getMasterSSH() {
 }
 
 function getPodStatus(pod: V1Pod) {
-  if (pod.status?.containerStatuses === undefined) throw new Error(); // 有 Pod 处于创建失败的状态。
+  if (pod.status?.containerStatuses === undefined) {
+    // 一般情况下，Pod 不会创建失败，出现 undefined 的原因可能是由于只是下达了创建指令，kubelet 还没有启动 Pod 或者 Pod 正在启动过程中，从而导致 kubelet 尚未能够获取其状态信息。
+    return 0; // 直接返回创建中的信息。
+  }
   if (pod.status?.containerStatuses![0]?.state?.waiting !== undefined) {
     if (pod.status?.containerStatuses![0]?.state?.waiting?.reason === "ContainerCreating")  return 0; // 创建中。
     if (pod.status?.containerStatuses![0]?.state?.waiting?.reason === "CrashLoopBackOff")  return 1; // 运行中。
