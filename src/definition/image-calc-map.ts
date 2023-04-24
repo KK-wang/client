@@ -9,4 +9,19 @@ const imageCalcMap: {
   "ai-task-15s": "364",
 }
 
+const calcGithubMap: {
+  [key: string]: string
+} = {
+  "121": "5",
+  "169": "7",
+  "218": "9",
+  "267": "11",
+  "315": "13",
+  "364": "15",
+}
+
 export default imageCalcMap;
+export {
+  imageCalcMap,
+  calcGithubMap,
+}

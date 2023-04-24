@@ -5,7 +5,7 @@ import config from "../definition/vars";
 import nodeInfoPlus from "../definition/node-info";
 import { V1Pod } from "@kubernetes/client-node";
 import sshUtils from "../utils/ssh";
-import imageCalcMap from "../definition/image-calc-map";
+import { imageCalcMap, calcGithubMap } from "../definition/image-calc-map";
 
 interface INodeListMetrics {
   [key: string]: {
@@ -145,7 +145,7 @@ async function getNodes(ctx: Koa.ParameterizedContext, next: Koa.Next) {
     nodes[nodeName].pods[podName] = {
       image: pod.spec?.containers[0].image!,
       status: getPodStatus(pod)!,
-      githubUrl: `https://github.com/KK-wang/ai-task/blob/master/various-task/Dockerfile.${calc.slice(0, -3)}s`,
+      githubUrl: `https://github.com/KK-wang/ai-task/blob/master/various-task/Dockerfile.${calcGithubMap[calc]}s`,
       calcMetrics: calc,
     };
   };
