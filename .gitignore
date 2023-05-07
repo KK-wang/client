@@ -26,3 +26,5 @@ pnpm-debug.log*
 error-log
 
 logs
+
+.VSCodeCounter
